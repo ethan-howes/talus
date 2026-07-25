@@ -12,8 +12,8 @@ if len(sys.argv) != 3:
     print("Usage: validate_output.py <cuda_output.bin> <qgis_reference.tif>")
     sys.exit(1)
 
-cuda_path = sys_argv[1]
-qgis_path = sys_argv[2]
+cuda_path = sys.argv[1]
+qgis_path = sys.argv[2]
 
 cuda_data = np.fromfile(cuda_path, dtype=np.float32)
 
