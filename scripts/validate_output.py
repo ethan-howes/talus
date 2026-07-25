@@ -5,6 +5,8 @@ import numpy as np
 from scipy import stats
 from osgeo import gdal
 
+gdal.UseExceptions()
+
 NODATA = -9999.0
 PASS_THRESHOLD = 0.99
 
