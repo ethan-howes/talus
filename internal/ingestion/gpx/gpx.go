@@ -3,15 +3,14 @@ package gpx
 import (
 	"encoding/xml"
 	"fmt"
-	"strings"
 	"os"
+	"strings"
 )
 
-
 type gpxFile struct {
-    XMLName xml.Name   `xml:"gpx"`
-    Tracks  []gpxTrack `xml:"trk"`
-    Routes  []gpxRoute `xml:"rte"`
+	XMLName xml.Name   `xml:"gpx"`
+	Tracks  []gpxTrack `xml:"trk"`
+	Routes  []gpxRoute `xml:"rte"`
 }
 
 type gpxTrack struct {
@@ -30,7 +29,6 @@ type gpxPoint struct {
 	Lat float64 `xml:"lat,attr"`
 	Lon float64 `xml:"lon,attr"`
 }
-
 
 func Parse(filePath string) (string, error) {
 

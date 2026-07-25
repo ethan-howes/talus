@@ -11,20 +11,18 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/ethan-howes/talus/internal/config"
 	"github.com/ethan-howes/talus/internal/hazard/alerts"
 	"github.com/ethan-howes/talus/internal/hazard/freezethaw"
 	"github.com/ethan-howes/talus/internal/hazard/proximity"
-	"github.com/ethan-howes/talus/internal/config"
 	"github.com/ethan-howes/talus/internal/store"
 	"github.com/ethan-howes/talus/internal/store/models"
 	"github.com/ethan-howes/talus/internal/telemetry"
 )
 
-
 type analyzeRequest struct {
 	RouteID int `json:"route_id"`
 }
-
 
 func main() {
 	// load config
@@ -63,7 +61,6 @@ func main() {
 	}
 }
 
-
 func handleAnalyze(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -82,7 +79,6 @@ func handleAnalyze(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) 
 			return
 		}
 
-
 		for _, sz := range sourceZones {
 			prediction, err := freezethaw.PredictFreezeThaw(
 				ctx,
@@ -95,11 +91,11 @@ func handleAnalyze(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) 
 				continue
 			}
 			_, err = store.InsertFreezeThawWindow(ctx, pool, models.FreezeThawWindow{
-				SourceZoneID: 		sz.ID,
-				OvernightLowC: 		prediction.OvernightLowC,
-				SunExposureTime: 	time.Now(),
-				FreezeThawActive: 	prediction.FreezeThawActive,
-				RiskLevel: 		prediction.RiskLevel,
+				SourceZoneID:     sz.ID,
+				OvernightLowC:    prediction.OvernightLowC,
+				SunExposureTime:  time.Now(),
+				FreezeThawActive: prediction.FreezeThawActive,
+				RiskLevel:        prediction.RiskLevel,
 			})
 			if err != nil {
 				logger.Error("failed to insert freeze thaw window", "error", err)
@@ -136,10 +132,10 @@ func handleAnalyze(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) 
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"route_id": 		req.RouteID,
-			"assessments": 		len(assessments),
-			"freeze_thaw_active": 	freezeThawActive,
-			"message": 		"hazard analysis complete",
+			"route_id":           req.RouteID,
+			"assessments":        len(assessments),
+			"freeze_thaw_active": freezeThawActive,
+			"message":            "hazard analysis complete",
 		})
 	}
 }

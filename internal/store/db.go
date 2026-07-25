@@ -1,26 +1,26 @@
 package store
 
 import (
-    "context"
-    "fmt"
+	"context"
+	"fmt"
 
-    "github.com/golang-migrate/migrate/v4"
-    _ "github.com/golang-migrate/migrate/v4/database/postgres"
-    _ "github.com/golang-migrate/migrate/v4/source/file"
-    "github.com/jackc/pgx/v5/pgxpool"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/jackc/pgx/v5/pgxpool"
 
-    "github.com/ethan-howes/talus/internal/config"
+	"github.com/ethan-howes/talus/internal/config"
 )
 
 func Connect(cfg *config.Config) (*pgxpool.Pool, error) {
 
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
-	    cfg.PostgresUser,
-	    cfg.PostgresPassword,
-	    cfg.PostgresHost,
-	    cfg.PostgresPort,
-	    cfg.PostgresDB,
-	    cfg.PostgresSSLMode,
+		cfg.PostgresUser,
+		cfg.PostgresPassword,
+		cfg.PostgresHost,
+		cfg.PostgresPort,
+		cfg.PostgresDB,
+		cfg.PostgresSSLMode,
 	)
 
 	pool, err := pgxpool.New(context.Background(), dsn)

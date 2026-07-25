@@ -21,7 +21,7 @@ func readRaster(path string) ([]float32, error) {
 	}
 
 	// convert raw bytes to float32 slice
-    	floats := make([]float32, len(data)/4)
+	floats := make([]float32, len(data)/4)
 	for i := range floats {
 		bits := binary.LittleEndian.Uint32(data[i*4 : i*4+4])
 		floats[i] = math.Float32frombits(bits)
@@ -37,7 +37,7 @@ func findClusters(slope, plan, tri []float32, rows, cols int, slopeThresh, triTh
 	for i := 0; i < rows*cols; i++ {
 		if float64(slope[i]) > slopeThresh && plan[i] > 0 && float64(tri[i]) > triThresh && !visited[i] {
 			var c cluster
-			queue:= []int{i}
+			queue := []int{i}
 			visited[i] = true
 
 			for len(queue) > 0 {
@@ -55,22 +55,22 @@ func findClusters(slope, plan, tri []float32, rows, cols int, slopeThresh, triTh
 				if row > 0 {
 					neighbors = append(neighbors, (row-1)*cols+col)
 				}
-				if row < rows - 1 {
+				if row < rows-1 {
 					neighbors = append(neighbors, (row+1)*cols+col)
 				}
 				if col > 0 {
 					neighbors = append(neighbors, row*cols+(col-1))
 				}
-				if col < cols - 1 {
+				if col < cols-1 {
 					neighbors = append(neighbors, row*cols+(col+1))
 				}
 
 				for _, n := range neighbors {
-					if n >= 0 && n < rows*cols && 
-					!visited[n] && 
-					float64(slope[n]) > slopeThresh && 
-					plan[n] > 0 && 
-					float64(tri[n]) > triThresh {
+					if n >= 0 && n < rows*cols &&
+						!visited[n] &&
+						float64(slope[n]) > slopeThresh &&
+						plan[n] > 0 &&
+						float64(tri[n]) > triThresh {
 						visited[n] = true
 						queue = append(queue, n)
 					}
@@ -85,8 +85,7 @@ func findClusters(slope, plan, tri []float32, rows, cols int, slopeThresh, triTh
 	return clusters
 }
 
-
-func DetectSourceZones (slopePath, planPath, triPath string, rows, cols int, cellSizeM float64, slopeThresh, triThresh float64, originLon, originLat float64, demTileID, geologyID int) ([]models.SourceZone, error) {
+func DetectSourceZones(slopePath, planPath, triPath string, rows, cols int, cellSizeM float64, slopeThresh, triThresh float64, originLon, originLat float64, demTileID, geologyID int) ([]models.SourceZone, error) {
 
 	slope, err := readRaster(slopePath)
 	if err != nil {
@@ -122,10 +121,18 @@ func DetectSourceZones (slopePath, planPath, triPath string, rows, cols int, cel
 		for _, idx := range c.cells {
 			r := idx / cols
 			col := idx % cols
-			if r < minRow {minRow = r}
-			if r > maxRow {maxRow = r}
-			if col < minCol {minCol = col}
-			if col > maxCol {maxCol = col}
+			if r < minRow {
+				minRow = r
+			}
+			if r > maxRow {
+				maxRow = r
+			}
+			if col < minCol {
+				minCol = col
+			}
+			if col > maxCol {
+				maxCol = col
+			}
 			slopeSum += float64(slope[idx])
 		}
 		meanSlope := slopeSum / float64(len(c.cells))
@@ -153,13 +160,13 @@ func DetectSourceZones (slopePath, planPath, triPath string, rows, cols int, cel
 		centroid := fmt.Sprintf("POINT(%f %f)", centLon, centLat)
 
 		zones = append(zones, models.SourceZone{
-			DemTileID: demTileID,
-			Geometry: polygon,
-			Centroid: centroid,
-			MeanSlopeDeg: meanSlope,
+			DemTileID:     demTileID,
+			Geometry:      polygon,
+			Centroid:      centroid,
+			MeanSlopeDeg:  meanSlope,
 			MeanAspectDeg: 0,
-			AreaM2: areaMi2,
-			GeologyID: geologyID,
+			AreaM2:        areaMi2,
+			GeologyID:     geologyID,
 		})
 	}
 	return zones, nil

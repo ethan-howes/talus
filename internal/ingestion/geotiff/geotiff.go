@@ -1,12 +1,10 @@
 package geotiff
 
-
 import (
+	"encoding/json"
 	"fmt"
 	"os/exec"
-	"encoding/json"
 )
-
 
 type GeoTIFFInfo struct {
 	Filename    string
@@ -21,15 +19,13 @@ type GeoTIFFInfo struct {
 	MaxLat      float64
 }
 
-
 type gdalInfo struct {
-	Size              []int              `json:"size"`
-	GeoTransform      []float64          `json:"geoTransform"`
-	CornerCoordinates gdalCorners        `json:"cornerCoordinates"`
-	Bands             []gdalBand         `json:"bands"`
-	Stac              gdalStac           `json:"stac"`
+	Size              []int       `json:"size"`
+	GeoTransform      []float64   `json:"geoTransform"`
+	CornerCoordinates gdalCorners `json:"cornerCoordinates"`
+	Bands             []gdalBand  `json:"bands"`
+	Stac              gdalStac    `json:"stac"`
 }
-
 
 type gdalCorners struct {
 	UpperLeft  []float64 `json:"upperLeft"`
@@ -38,16 +34,13 @@ type gdalCorners struct {
 	LowerRight []float64 `json:"lowerRight"`
 }
 
-
 type gdalBand struct {
 	NoDataValue float64 `json:"noDataValue"`
 }
 
-
 type gdalStac struct {
 	EPSG int `json:"proj:epsg"`
 }
-
 
 func Inspect(filePath string) (*GeoTIFFInfo, error) {
 
@@ -77,7 +70,3 @@ func Inspect(filePath string) (*GeoTIFFInfo, error) {
 	}, nil
 
 }
-
-
-
-

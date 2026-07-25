@@ -9,7 +9,6 @@ import (
 	"github.com/ethan-howes/talus/internal/store/models"
 )
 
-
 func FindProximateSourceZones(ctx context.Context, pool *pgxpool.Pool, routeID int, radiusM float64, freezeThawActive bool) ([]models.RouteRiskAssessment, error) {
 
 	// postGIS query
@@ -38,11 +37,11 @@ func FindProximateSourceZones(ctx context.Context, pool *pgxpool.Pool, routeID i
 	defer rows.Close()
 
 	var assessments []models.RouteRiskAssessment
-	
+
 	for rows.Next() {
-		var sourceZoneID  	int
-		var meanSlopeDeg 	float64
-		var distanceM 		float64
+		var sourceZoneID int
+		var meanSlopeDeg float64
+		var distanceM float64
 
 		err := rows.Scan(&sourceZoneID, &meanSlopeDeg, &distanceM)
 		if err != nil {
@@ -67,10 +66,10 @@ func FindProximateSourceZones(ctx context.Context, pool *pgxpool.Pool, routeID i
 		riskScore := proximityWeight * slopeWeight * freezeThawMultiplier
 
 		assessments = append(assessments, models.RouteRiskAssessment{
-			RouteID: 	routeID,
-			SourceZoneID: 	sourceZoneID,
+			RouteID:        routeID,
+			SourceZoneID:   sourceZoneID,
 			NearestSourceM: distanceM,
-			RiskScore: 	riskScore,
+			RiskScore:      riskScore,
 		})
 	}
 

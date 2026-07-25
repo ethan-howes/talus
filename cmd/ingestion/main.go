@@ -22,22 +22,21 @@ import (
 	"github.com/ethan-howes/talus/internal/telemetry"
 )
 
-
 type demRequest struct {
 	FilePath string `json:"file_path"`
 	Source   string `json:"source"`
 }
 
 type demResponse struct {
-	DemTileID  int    `json:"dem_tile_id"`
-	TileCount  int    `json:"tile_count"`
-	Message    string `json:"message"`
+	DemTileID int    `json:"dem_tile_id"`
+	TileCount int    `json:"tile_count"`
+	Message   string `json:"message"`
 }
 
 type routeRequest struct {
-    FilePath string `json:"file_path"`
-    Name     string `json:"name"`
-    Source   string `json:"source"`
+	FilePath string `json:"file_path"`
+	Name     string `json:"name"`
+	Source   string `json:"source"`
 }
 
 type geologyRequest struct {
@@ -45,7 +44,6 @@ type geologyRequest struct {
 	RockType  string `json:"rock_type"`
 	Geometry  string `json:"geometry"`
 }
-
 
 func main() {
 
@@ -88,10 +86,9 @@ func main() {
 	}
 }
 
-
 func handleDem(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		
+
 		var req demRequest
 		err := json.NewDecoder(r.Body).Decode(&req)
 		if err != nil {
@@ -119,14 +116,14 @@ func handleDem(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) http
 
 		ctx := r.Context()
 		demTileID, err := store.InsertDemTile(ctx, pool, models.DemTile{
-			Filename: 	result.Filename,
-			BoundingBox: 	bbox,
-			Crs: 		result.CRS,
-			ResolutionM: 	result.ResolutionM,
-			Rows: 		result.Rows,
-			Cols: 		result.Cols,
-			FilePath: 	req.FilePath,
-			Source: 	req.Source,
+			Filename:    result.Filename,
+			BoundingBox: bbox,
+			Crs:         result.CRS,
+			ResolutionM: result.ResolutionM,
+			Rows:        result.Rows,
+			Cols:        result.Cols,
+			FilePath:    req.FilePath,
+			Source:      req.Source,
 		})
 		if err != nil {
 			logger.Error("failed to insert dem tile", "error", err)
@@ -134,17 +131,16 @@ func handleDem(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) http
 			return
 		}
 
-
 		// notify s2 for each tile
 		for _, tile := range tiles {
 			tileBody, _ := json.Marshal(map[string]interface{}{
-				"tile_path": 	req.FilePath,
-				"output_dir": 	cfg.DemStoragePath,
-				"rows": 	tile.Rows,
-				"cols": 	tile.Cols,
-				"cell_size": 	result.ResolutionM,
-				"dem_tile_id": 	demTileID,
-				"geology_id": 	1,
+				"tile_path":    req.FilePath,
+				"output_dir":   cfg.DemStoragePath,
+				"rows":         tile.Rows,
+				"cols":         tile.Cols,
+				"cell_size":    result.ResolutionM,
+				"dem_tile_id":  demTileID,
+				"geology_id":   1,
 				"origin_lon":   tile.OriginLon,
 				"origin_lat":   tile.OriginLat,
 				"slope_thresh": cfg.TerrainSlopeThreshDeg,
@@ -155,15 +151,14 @@ func handleDem(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) http
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(demResponse {
+		json.NewEncoder(w).Encode(demResponse{
 			DemTileID: demTileID,
 			TileCount: len(tiles),
 			Message:   "DEM ingested successfully",
 		})
 
 	}
-} 	
-
+}
 
 func handleRoutes(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -184,9 +179,9 @@ func handleRoutes(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) h
 
 		ctx := r.Context()
 		routeID, err := store.InsertRoute(ctx, pool, models.Route{
-			Name: 		req.Name,
-			Geometry: 	result,
-			Source: 	req.Source,
+			Name:     req.Name,
+			Geometry: result,
+			Source:   req.Source,
 		})
 		if err != nil {
 			logger.Error("failed to insert route", "error", err)
@@ -196,12 +191,11 @@ func handleRoutes(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) h
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"route_id": 	routeID,
-			"message": 	"route ingested successfully",
+			"route_id": routeID,
+			"message":  "route ingested successfully",
 		})
 	}
 }
-
 
 func handleGeology(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -221,11 +215,11 @@ func handleGeology(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) 
 
 		ctx := r.Context()
 		geologyID, err := store.InsertGeology(ctx, pool, models.Geology{
-			DemTileID: 	req.DemTileID,
-			Geometry: 	req.Geometry,
-			RockType: 	req.RockType,
-			BounceCoeff: 	params.BounceCoeff,
-			FrictionCoeff: 	params.FrictionCoeff,
+			DemTileID:      req.DemTileID,
+			Geometry:       req.Geometry,
+			RockType:       req.RockType,
+			BounceCoeff:    params.BounceCoeff,
+			FrictionCoeff:  params.FrictionCoeff,
 			FragmentationK: params.FragmentationK,
 		})
 		if err != nil {
@@ -236,8 +230,8 @@ func handleGeology(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) 
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"geology_id": 	geologyID,
-			"message": 	"geology ingested successfully",
+			"geology_id": geologyID,
+			"message":    "geology ingested successfully",
 		})
 	}
 }

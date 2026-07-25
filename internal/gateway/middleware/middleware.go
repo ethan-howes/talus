@@ -7,7 +7,6 @@ import (
 	"time"
 )
 
-
 type statusRecorder struct {
 	http.ResponseWriter
 	status int
@@ -18,17 +17,15 @@ func (r *statusRecorder) WriteHeader(status int) {
 	r.ResponseWriter.WriteHeader(status)
 }
 
-
 func JSONError(w http.ResponseWriter, message string, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	json.NewEncoder(w).Encode(map[string]string{"error": message})
 }
 
-
 func Logging(logger *slog.Logger, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		
+
 		start := time.Now()
 		//handler call
 
@@ -36,9 +33,9 @@ func Logging(logger *slog.Logger, next http.Handler) http.Handler {
 		next.ServeHTTP(rec, r)
 		// log after return
 		logger.Info("request",
-			"method", 	r.Method,
-			"path", 	r.URL.Path,
-			"duration_ms", 	time.Since(start).Milliseconds(),
+			"method", r.Method,
+			"path", r.URL.Path,
+			"duration_ms", time.Since(start).Milliseconds(),
 		)
 	})
 }

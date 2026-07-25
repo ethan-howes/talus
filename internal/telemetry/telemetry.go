@@ -13,7 +13,7 @@ func NewLogger(lvl string) *slog.Logger {
 	switch strings.ToLower(lvl) {
 	case "debug":
 		level = slog.LevelDebug
-    	case "warn":
+	case "warn":
 		level = slog.LevelWarn
 	case "error":
 		level = slog.LevelError
@@ -27,6 +27,7 @@ func NewLogger(lvl string) *slog.Logger {
 }
 
 type contextKey string
+
 const requestIDKey contextKey = "request_id"
 
 func WithRequestID(ctx context.Context, requestID string) context.Context {

@@ -7,28 +7,28 @@ import (
 )
 
 type Config struct {
-	PostgresHost     	string
-	PostgresPort     	int
-	PostgresDB       	string
-	PostgresUser     	string
-	PostgresPassword 	string
-	PostgresSSLMode  	string
-	LogLevel 	 	string
-	S1ListenPort 	 	string
-	S2ListenPort 	 	string
-	S4ListenPort 		string
-	S5ListenPort 		string
-	CudaTerrainBinaryPath 	string
-	S1IngestionEndpoint 	string
-	S2TerrainEndpoint 	string
-	S4HazardEndpoint 	string
-	DemStoragePath 		string
-	TerrainSlopeThreshDeg 	float64
-	TerrainTriThreshold 	float64
-	TerrainTileHaloMeters 	float64
-	TerrainTileMaxCells 	int
-	ProximityRadiusM 	float64
-	WebStaticDir 		string
+	PostgresHost          string
+	PostgresPort          int
+	PostgresDB            string
+	PostgresUser          string
+	PostgresPassword      string
+	PostgresSSLMode       string
+	LogLevel              string
+	S1ListenPort          string
+	S2ListenPort          string
+	S4ListenPort          string
+	S5ListenPort          string
+	CudaTerrainBinaryPath string
+	S1IngestionEndpoint   string
+	S2TerrainEndpoint     string
+	S4HazardEndpoint      string
+	DemStoragePath        string
+	TerrainSlopeThreshDeg float64
+	TerrainTriThreshold   float64
+	TerrainTileHaloMeters float64
+	TerrainTileMaxCells   int
+	ProximityRadiusM      float64
+	WebStaticDir          string
 }
 
 func Load() (*Config, error) {
@@ -61,7 +61,7 @@ func Load() (*Config, error) {
 	portStr := os.Getenv("POSTGRES_PORT")
 	port, err := strconv.Atoi(portStr)
 	if err != nil {
-    		return nil, fmt.Errorf("POSTGRES_PORT must be a number: %w", err)
+		return nil, fmt.Errorf("POSTGRES_PORT must be a number: %w", err)
 	}
 
 	logLevel := os.Getenv("LOG_LEVEL")
@@ -169,28 +169,28 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("SOURCE_ZONE_PROXIMITY_RADIUS_M must be a number: %w", err)
 	}
 
-	return &Config {
-		PostgresHost:    	host,
-		PostgresPort:    	port,
-		PostgresDB:      	db,
-		PostgresUser:    	user,
-		PostgresPassword: 	password,
-		PostgresSSLMode: 	sslmode,
-		LogLevel: 	 	logLevel,
-		S1ListenPort: 	 	s1Port,
-		S2ListenPort: 	 	s2Port,
-		S4ListenPort: 	 	s4Port,
-		S5ListenPort: 	 	s5Port,
-		CudaTerrainBinaryPath: 	cudaBinary,
-		S1IngestionEndpoint: 	s1Endpoint,
-		S2TerrainEndpoint: 	s2Endpoint,
-		S4HazardEndpoint: 	s4Endpoint,
-		DemStoragePath:         demStoragePath,
-		TerrainSlopeThreshDeg:  slopeThresh,
-		TerrainTriThreshold:    triThresh,
-		TerrainTileHaloMeters:  haloMeters,
-		TerrainTileMaxCells:    maxCells,
-		ProximityRadiusM:  	proximityRadius,
-		WebStaticDir: 		webstaticdir,
+	return &Config{
+		PostgresHost:          host,
+		PostgresPort:          port,
+		PostgresDB:            db,
+		PostgresUser:          user,
+		PostgresPassword:      password,
+		PostgresSSLMode:       sslmode,
+		LogLevel:              logLevel,
+		S1ListenPort:          s1Port,
+		S2ListenPort:          s2Port,
+		S4ListenPort:          s4Port,
+		S5ListenPort:          s5Port,
+		CudaTerrainBinaryPath: cudaBinary,
+		S1IngestionEndpoint:   s1Endpoint,
+		S2TerrainEndpoint:     s2Endpoint,
+		S4HazardEndpoint:      s4Endpoint,
+		DemStoragePath:        demStoragePath,
+		TerrainSlopeThreshDeg: slopeThresh,
+		TerrainTriThreshold:   triThresh,
+		TerrainTileHaloMeters: haloMeters,
+		TerrainTileMaxCells:   maxCells,
+		ProximityRadiusM:      proximityRadius,
+		WebStaticDir:          webstaticdir,
 	}, nil
 }

@@ -13,20 +13,20 @@ import (
 // ./terrain input.bin slope.bin aspect.bin plan.bin profile.bin tri.bin 10812 10812 92.59
 
 type TerrainResult struct {
-	SlopePath 		string
-	AspectPath 		string
-	PlanPath 		string
-	ProfilePath 		string
-	TriPath 		string
-	GpuTimeMsSlopeAspect 	float64
-	CpuTimeMsSlopeAspect 	float64
-	GpuTimeMsCurvature 	float64
-	CpuTimeMsCurvature 	float64
-	GpuTimeMsTri 		float64
-	CpuTimeMsTri 		float64
+	SlopePath            string
+	AspectPath           string
+	PlanPath             string
+	ProfilePath          string
+	TriPath              string
+	GpuTimeMsSlopeAspect float64
+	CpuTimeMsSlopeAspect float64
+	GpuTimeMsCurvature   float64
+	CpuTimeMsCurvature   float64
+	GpuTimeMsTri         float64
+	CpuTimeMsTri         float64
 }
 
-func RunTerrain(binaryPath string, inputPath string, outputDir string, rows int, cols int, cellSize float64, ) (*TerrainResult, error) {
+func RunTerrain(binaryPath string, inputPath string, outputDir string, rows int, cols int, cellSize float64) (*TerrainResult, error) {
 
 	slopePath := filepath.Join(outputDir, "slope.bin")
 	aspectPath := filepath.Join(outputDir, "aspect.bin")
@@ -45,11 +45,11 @@ func RunTerrain(binaryPath string, inputPath string, outputDir string, rows int,
 	lines := strings.Split(text, "\n")
 
 	result := &TerrainResult{
-		SlopePath: 	slopePath,
-		AspectPath: 	aspectPath,
-		PlanPath: 	planPath,
-		ProfilePath: 	profilePath,
-		TriPath: 	triPath,
+		SlopePath:   slopePath,
+		AspectPath:  aspectPath,
+		PlanPath:    planPath,
+		ProfilePath: profilePath,
+		TriPath:     triPath,
 	}
 
 	for _, line := range lines {

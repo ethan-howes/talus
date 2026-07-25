@@ -17,27 +17,24 @@ import (
 	"github.com/ethan-howes/talus/internal/terrain/zones"
 )
 
-
 type tileRequest struct {
-	TilePath 	string  	`json:"tile_path"`
-	OutputDir 	string  	`json:"output_dir"`
-	Rows 		int     	`json:"rows"`
-	Cols 		int     	`json:"cols"`
-	CellSize 	float64 	`json:"cell_size"`
-	DemTileID 	int     	`json:"dem_tile_id"`
-	GeologyID	int     	`json:"geology_id"`
-	OriginLon 	float64 	`json:"origin_lon"`
-	OriginLat 	float64 	`json:"origin_lat"`
-	SlopeThresh 	float64 	`json:"slope_thresh"`
-	TriThresh 	float64 	`json:"tri_thresh"`
+	TilePath    string  `json:"tile_path"`
+	OutputDir   string  `json:"output_dir"`
+	Rows        int     `json:"rows"`
+	Cols        int     `json:"cols"`
+	CellSize    float64 `json:"cell_size"`
+	DemTileID   int     `json:"dem_tile_id"`
+	GeologyID   int     `json:"geology_id"`
+	OriginLon   float64 `json:"origin_lon"`
+	OriginLat   float64 `json:"origin_lat"`
+	SlopeThresh float64 `json:"slope_thresh"`
+	TriThresh   float64 `json:"tri_thresh"`
 }
-
 
 type tileResponse struct {
-	SourceZoneCount int    		`json:"source_zone_count"`
-	Message         string 		`json:"message"`
+	SourceZoneCount int    `json:"source_zone_count"`
+	Message         string `json:"message"`
 }
-
 
 func main() {
 
@@ -76,7 +73,6 @@ func main() {
 		os.Exit(1)
 	}
 }
-
 
 func handleTile(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) http.HandlerFunc {
 
@@ -126,11 +122,11 @@ func handleTile(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) htt
 		ctx := r.Context()
 
 		_, err = store.InsertTerrainDerivative(ctx, pool, models.TerrainDerivative{
-			DemTileID: 	req.DemTileID,
-			SlopePath: 	result.SlopePath,
-			AspectPath: 	result.AspectPath,
-			CurvaturePath: 	result.PlanPath,
-			TriPath: 	result.TriPath,
+			DemTileID:     req.DemTileID,
+			SlopePath:     result.SlopePath,
+			AspectPath:    result.AspectPath,
+			CurvaturePath: result.PlanPath,
+			TriPath:       result.TriPath,
 		})
 		if err != nil {
 			logger.Error("failed to insert terrain derivative", "error", err)
@@ -148,9 +144,9 @@ func handleTile(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) htt
 		}
 
 		kernels := []struct {
-			name 	string
-			gpu  	float64
-			cpu 	float64
+			name string
+			gpu  float64
+			cpu  float64
 		}{
 			{"slope_aspect", result.GpuTimeMsSlopeAspect, result.CpuTimeMsSlopeAspect},
 			{"curvature", result.GpuTimeMsCurvature, result.CpuTimeMsCurvature},
@@ -179,7 +175,7 @@ func handleTile(pool *pgxpool.Pool, logger *slog.Logger, cfg *config.Config) htt
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(tileResponse{
 			SourceZoneCount: len(detectedZones),
-			Message: "terrain processing complete",
+			Message:         "terrain processing complete",
 		})
 	}
 }

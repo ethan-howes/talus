@@ -10,7 +10,6 @@ import (
 	"github.com/ethan-howes/talus/internal/store/models"
 )
 
-
 func GetSourceZones(ctx context.Context, pool *pgxpool.Pool, routeID int, radiusM float64) ([]models.SourceZone, error) {
 
 	sql := `
@@ -46,14 +45,13 @@ func GetSourceZones(ctx context.Context, pool *pgxpool.Pool, routeID int, radius
 	return zones, nil
 }
 
-
 func InsertRouteRiskAssessment(ctx context.Context, pool *pgxpool.Pool, a models.RouteRiskAssessment) (int, error) {
 
 	var id int
 	err := pool.QueryRow(ctx,
-	`INSERT INTO route_risk_assessments (route_id, source_zone_id, nearest_source_m, risk_score)
+		`INSERT INTO route_risk_assessments (route_id, source_zone_id, nearest_source_m, risk_score)
 	VALUES ($1, $2, $3, $4) RETURNING id`,
-	a.RouteID, a.SourceZoneID, a.NearestSourceM, a.RiskScore,).Scan(&id)
+		a.RouteID, a.SourceZoneID, a.NearestSourceM, a.RiskScore).Scan(&id)
 
 	if err != nil {
 		return 0, fmt.Errorf("failed to insert route risk assessment: %w", err)
@@ -61,14 +59,13 @@ func InsertRouteRiskAssessment(ctx context.Context, pool *pgxpool.Pool, a models
 	return id, nil
 }
 
-
 func InsertFreezeThawWindow(ctx context.Context, pool *pgxpool.Pool, f models.FreezeThawWindow) (int, error) {
 
 	var id int
 	err := pool.QueryRow(ctx,
-	`INSERT INTO freeze_thaw_windows (source_zone_id, forecast_date, overnight_low_c, sun_exposure_time, freeze_thaw_active, risk_level)
+		`INSERT INTO freeze_thaw_windows (source_zone_id, forecast_date, overnight_low_c, sun_exposure_time, freeze_thaw_active, risk_level)
 	VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-	f.SourceZoneID, time.Now(), f.OvernightLowC, f.SunExposureTime, f.FreezeThawActive, f.RiskLevel).Scan(&id)
+		f.SourceZoneID, time.Now(), f.OvernightLowC, f.SunExposureTime, f.FreezeThawActive, f.RiskLevel).Scan(&id)
 
 	if err != nil {
 		return 0, fmt.Errorf("failed to insert freeze thaw window: %w", err)
