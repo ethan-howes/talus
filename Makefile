@@ -3,7 +3,7 @@
 -include .env
 export
 
-.PHONY: up down migrate logs cuda
+.PHONY: up down migrate logs cuda build test
 
 # up: start the database container
 up:
@@ -24,3 +24,12 @@ logs:
 # cuda: builds CUDA terrain binary
 cuda:
 	$(MAKE) -C cuda/terrain
+
+build:
+	go build -o bin/ingestion ./cmd/ingestion/...
+	go build -o bin/terrain ./cmd/terrain/...
+	go build -o bin/hazard ./cmd/hazard/...
+	go build -o bin/gateway ./cmd/gateway/...
+
+test: 
+	go test ./...
