@@ -1,6 +1,7 @@
 # Talus Prototype Docker Compose
 
 services:
+
   postgres:
     image: postgis/postgis:16-3.4
     container_name: talus-postgres
@@ -19,6 +20,24 @@ services:
       timeout: 5s
       retries: 5
 
+  ingestion:
+    build:
+      context: ..
+      dockerfile: deployments/docker/ingestion.Dockerfile
+    container_name: talus-ingestion
+    restart: unless-stopped
+    env_file: ../.env
+    ports:
+      - "${S1_LISTEN_PORT}:8081"
+    volumes:
+      - dem_data:/data/dem
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
 volumes:
   postgres_data:
     driver: local
+
+
