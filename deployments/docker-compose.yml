@@ -57,6 +57,18 @@ services:
                 count: 1
                 capabilities: [gpu]
 
+    hazard:
+      build:
+        context: ..
+        dockerfile: deployments/docker/hazard.Dockerfile
+      container_name: talus-hazard
+      restart: unless-stopped
+      env_file: ../.env
+      ports:
+        - "${S4_LISTEN_PORT}"
+      depends_on:
+        postgres:
+          condition: service_healthy
 
 
 volumes:
