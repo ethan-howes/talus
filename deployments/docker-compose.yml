@@ -35,6 +35,29 @@ services:
       postgres:
         condition: service_healthy
 
+    terrain:
+      build:
+        context: ..
+        dockerfile: deployments/docker/terrain.Dockerfile
+      container_name: talis-terrain
+      restart: unless-stopped
+      env_file: ../.env
+      ports:
+        - "${S2_LISTEN_PORT}:8082"
+      volumes:
+        - dem_data:/data/dem
+      depends_on:
+        postgres:
+          condition: service_healthy
+      deploy:
+        resources:
+          reservations:
+            devices:
+              - driver: nvidia
+                count: 1
+                capabilities: [gpu]
+
+
 
 volumes:
   postgres_data:
