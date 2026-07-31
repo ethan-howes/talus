@@ -52,19 +52,30 @@ NOAA NOMADS ──► S4 Hazard Analysis (Go) ◄────┘
 
 ---
 
+## GPU Benchmark
+ 
+Kernels run on a GTX 1060 3GB against the Foster Falls, TN. CPU baseline is single-threaded sequential execution of the same computation.
+ 
+| Kernel | GPU | CPU | Speedup | Cells |
+|---|---|---|---|---|
+| Sobel slope/aspect | 569ms | 6,041ms | **10.6×** | 116.9M |
+| Plan/profile curvature | 565ms | 1,180ms | **2.1×** | 116.9M |
+| Terrain Ruggedness Index | 318ms | 1,633ms | **5.1×** | 116.9M |
+ 
+---
+
 ## Tech Stack
-
-**Languages:** Go, C, CUDA, SQL, JavaScript, HTML, CSS
-
-**Infrastructure:** Docker, Docker Compose, NVIDIA Container Toolkit
-
-**Database:** PostgreSQL 15 + PostGIS 3, pgx driver, golang-migrate
-
-**GPU:** CUDA Toolkit, CUDA Events for kernel timing
-
-**Frontend:** Leaflet.js, vanilla JS — no build pipeline
-
-**Observability:** Structured JSON logging via Go `log/slog`
+ 
+| Layer | Technology |
+|---|---|
+| Microservices | Go (5 services) |
+| GPU kernels | CUDA |
+| Database | PostgreSQL + PostGIS |
+| Containerization | Docker, Docker Compose |
+| Frontend | Leaflet.js, vanilla JS |
+| CI | GitHub Actions |
+| DEM source | USGS 3DEP 1/3 arc-second (~10m/cell) |
+| Weather | Open-Meteo API |
 
 ---
 
